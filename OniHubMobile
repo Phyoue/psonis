@@ -24,43 +24,57 @@ local Frame = Instance.new("Frame")
     Frame.Parent = ScreenGui
 
     local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(1.1, 9) -- Set corner radius for smooth edges
+    UICorner.CornerRadius = UDim.new(1.1, 9) 
     UICorner.Parent = Frame
 
     local KeyBox = Instance.new("TextBox")
     KeyBox.Size = UDim2.new(0.8, 0, 0, 20)
     KeyBox.Position = UDim2.new(0.1, 0, 0.25, 0)
     KeyBox.PlaceholderText = "Paste your key here"
-    KeyBox.BackgroundTransparency = 0.5 -- Adjust transparency
+    KeyBox.BackgroundTransparency = 0.5 
     KeyBox.Parent = Frame
 
     local AuthenticationButton = Instance.new("TextButton")
     AuthenticationButton.Size = UDim2.new(0.8, 0, 0, 20)
     AuthenticationButton.Position = UDim2.new(0.1, 0, 0.50, 0)
     AuthenticationButton.Text = "Check Key"
-    AuthenticationButton.BackgroundTransparency = 0.5 -- Adjust transparency
+    AuthenticationButton.BackgroundTransparency = 0.5
     AuthenticationButton.Parent = Frame
 
     local CloseButton = Instance.new("TextButton")
     CloseButton.Size = UDim2.new(0.8, 0, 0, 20)
     CloseButton.Position = UDim2.new(0.1, 0, 0.70, 0)
     CloseButton.Text = "Close"
-    CloseButton.BackgroundTransparency = 0.5 -- Adjust transparency
+    CloseButton.BackgroundTransparency = 0.5 
     CloseButton.Parent = Frame
 
-AuthenticationButton.MouseButton1Click:Connect(function()
-    local keyinput = KeyBox.Text
-    local Authentication = validate_key("OniHub", keyinput)
-
-    if Authentication then
-        print('Successfully Authenticated')
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))();
+    AuthenticationButton.MouseButton1Click:Connect(function()
+        local keyinput = KeyBox.Text
+        local Authentication = validate_key("OniHub", keyinput)
+    
+        if Authentication then
+            print('Successfully Authenticated')
+    
+            
+            local success, scriptOrError = pcall(function()
+                return loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))
+            end)
+    
+            if success then
         
-        ScreenGui:Destroy()
-    else
-        warn('Invalid Key')
-    end
-end)
+                scriptOrError()
+            else
+           
+                warn("Error loading script:", scriptOrError)
+            end
+    
+         
+            ScreenGui:Destroy()
+        else
+            warn('Invalid Key')
+        end
+    end)
+    
 
 CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()

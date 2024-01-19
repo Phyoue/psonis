@@ -48,36 +48,19 @@ local Frame = Instance.new("Frame")
     CloseButton.BackgroundTransparency = 0.5 
     CloseButton.Parent = Frame
 
-    AuthenticationButton.MouseButton1Click:Connect(function()
-        local keyinput = KeyBox.Text
-        local Authentication = validate_key("OniHub", keyinput)
-    
-        if Authentication then
-            print('Successfully Authenticated')
-    
-            
-            local success, scriptOrError = pcall(function()
-                return loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))
-            end)
-    
-            if success then
-        
-                scriptOrError()
-            else
-           
-                warn("Error loading script:", scriptOrError)
-            end
-    
-         
-            ScreenGui:Destroy()
-        else
-            warn('Invalid Key')
-        end
-    end)
-    
+AuthenticationButton.MouseButton1Click:Connect(function()
+    local keyinput = KeyBox.Text
+    local Authentication = validate_key("OniHub", keyinput)
+
+    if Authentication then
+        print('Successfully Authenticated')
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))();
+        ScreenGui:Destroy()
+    else
+        warn('Invalid Key')
+    end
+end)
 
 CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
-
-

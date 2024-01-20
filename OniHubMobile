@@ -11,51 +11,48 @@ end
 local gui = Instance.new("ScreenGui")
 gui.Parent = game.Players.LocalPlayer.PlayerGui
 
--- Helper function to create UICorner
 local function createUICorner(parent)
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 6)
     corner.Parent = parent
 end
 
--- Create keyBox
 local keyBox = Instance.new("TextBox")
 keyBox.Size = UDim2.new(0, 200, 0, 30)
 keyBox.Position = UDim2.new(0.5, -100, 0.5, -75)
 keyBox.PlaceholderText = "Enter Key"
 keyBox.Parent = gui
-keyBox.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
-keyBox.TextColor3 = Color3.new(1, 1, 1) -- White text color
+keyBox.BackgroundColor3 = Color3.fromRGB(108, 28, 6) 
+keyBox.TextColor3 = Color3.new(1, 1, 1) 
 createUICorner(keyBox)
 
--- Create Get Key Button
 local getKeyButton = Instance.new("TextButton")
 getKeyButton.Size = UDim2.new(0, 100, 0, 30)
 getKeyButton.Position = UDim2.new(0.5, -50, 0.5, -40)
 getKeyButton.Text = "Get Key"
 getKeyButton.Parent = gui
-getKeyButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
-getKeyButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+getKeyButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) 
+getKeyButton.TextColor3 = Color3.new(1, 1, 1) 
 createUICorner(getKeyButton)
 
--- Create Check Key Button
+
 local checkButton = Instance.new("TextButton")
 checkButton.Size = UDim2.new(0, 100, 0, 30)
 checkButton.Position = UDim2.new(0.5, -50, 0.5, -5)
 checkButton.Text = "Check Key"
 checkButton.Parent = gui
-checkButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
-checkButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+checkButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6)
+checkButton.TextColor3 = Color3.new(1, 1, 1)
 createUICorner(checkButton)
 
--- Create Close Button
+
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 100, 0, 30)
 closeButton.Position = UDim2.new(0.5, -50, 0.5, 30)
 closeButton.Text = "Close"
 closeButton.Parent = gui
-closeButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
-closeButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+closeButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) 
+closeButton.TextColor3 = Color3.new(1, 1, 1) 
 createUICorner(closeButton)
 
 getKeyButton.MouseButton1Click:Connect(function()
@@ -67,22 +64,15 @@ end)
 
 checkButton.MouseButton1Click:Connect(function()
     local key = keyBox.Text
-    local authentication = validate_key(key)
-    
-    if authentication then
-        print('Successfully Authenticated')
-
-        local success, result = pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))()
-        end)
-
-        if not success then
-            warn('Error loading script:', result)
-        end
+    if validate_key(key) then
+        print('[Debug] Successfully Authenticated')
+        loadstring(game:HttpGet(("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps"),true))()
+        print('[Debug] Executed')
     else
         warn('Invalid Key')
     end
 end)
+
 
 closeButton.MouseButton1Click:Connect(function()
     gui:Destroy()

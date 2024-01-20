@@ -3,82 +3,87 @@ local service = "OniHub"
 local function GenerateLink(service)
     return loadstring(game:HttpGet(('https://pandadevelopment.net/service_api/PandaBetaLib.lua')))():GetLink(service)
 end
-
-local function validate_key(service, key)
+  
+local function validate_key(key)
     return loadstring(game:HttpGet(('https://pandadevelopment.net/service_api/PandaBetaLib.lua')))():ValidateKey(service, key)
 end
 
-local getlink = GenerateLink("OniHub")
-print(getlink)
-setclipboard(getlink)
+local gui = Instance.new("ScreenGui")
+gui.Parent = game.Players.LocalPlayer.PlayerGui
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- Helper function to create UICorner
+local function createUICorner(parent)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = parent
+end
 
-local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(0, 300, 0, 220)
-    Frame.Position = UDim2.new(0.5, -150, 0.5, -110)
-    Frame.BackgroundColor3 = Color3.fromRGB(116, 18, 49)
-    Frame.BorderSizePixel = 0
-    Frame.ClipsDescendants = true 
-    Frame.Parent = ScreenGui
+-- Create keyBox
+local keyBox = Instance.new("TextBox")
+keyBox.Size = UDim2.new(0, 200, 0, 30)
+keyBox.Position = UDim2.new(0.5, -100, 0.5, -75)
+keyBox.PlaceholderText = "Enter Key"
+keyBox.Parent = gui
+keyBox.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
+keyBox.TextColor3 = Color3.new(1, 1, 1) -- White text color
+createUICorner(keyBox)
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(1.1, 9) 
-    UICorner.Parent = Frame
+-- Create Get Key Button
+local getKeyButton = Instance.new("TextButton")
+getKeyButton.Size = UDim2.new(0, 100, 0, 30)
+getKeyButton.Position = UDim2.new(0.5, -50, 0.5, -40)
+getKeyButton.Text = "Get Key"
+getKeyButton.Parent = gui
+getKeyButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
+getKeyButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+createUICorner(getKeyButton)
 
-    local KeyBox = Instance.new("TextBox")
-    KeyBox.Size = UDim2.new(0.8, 0, 0, 20)
-    KeyBox.Position = UDim2.new(0.1, 0, 0.25, 0)
-    KeyBox.PlaceholderText = "Paste your key here"
-    KeyBox.BackgroundTransparency = 0.5 
-    KeyBox.Parent = Frame
+-- Create Check Key Button
+local checkButton = Instance.new("TextButton")
+checkButton.Size = UDim2.new(0, 100, 0, 30)
+checkButton.Position = UDim2.new(0.5, -50, 0.5, -5)
+checkButton.Text = "Check Key"
+checkButton.Parent = gui
+checkButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
+checkButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+createUICorner(checkButton)
 
-    local AuthenticationButton = Instance.new("TextButton")
-    AuthenticationButton.Size = UDim2.new(0.8, 0, 0, 20)
-    AuthenticationButton.Position = UDim2.new(0.1, 0, 0.50, 0)
-    AuthenticationButton.Text = "Check Key"
-    AuthenticationButton.BackgroundTransparency = 0.5
-    AuthenticationButton.Parent = Frame
+-- Create Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 100, 0, 30)
+closeButton.Position = UDim2.new(0.5, -50, 0.5, 30)
+closeButton.Text = "Close"
+closeButton.Parent = gui
+closeButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) -- #6c1c06
+closeButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+createUICorner(closeButton)
 
-    local CloseButton = Instance.new("TextButton")
-    CloseButton.Size = UDim2.new(0.8, 0, 0, 20)
-    CloseButton.Position = UDim2.new(0.1, 0, 0.70, 0)
-    CloseButton.Text = "Close"
-    CloseButton.BackgroundTransparency = 0.5 
-    CloseButton.Parent = Frame
-
-    AuthenticationButton.MouseButton1Click:Connect(function()
-        local keyinput = KeyBox.Text
-        local Authentication = validate_key("OniHub", keyinput)
-    
-        if Authentication then
-            print('Successfully Authenticated')
-    
-            
-            local success, scriptOrError = pcall(function()
-
-                return loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))
-            end)
-    
-            if success then
-        
-                scriptOrError()
-            else
-           
-                warn("Error loading script:", scriptOrError)
-            end
-    
-         
-            ScreenGui:Destroy()
-        else
-            warn('Invalid Key')
-        end
-    end)
-    
-
-CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
+getKeyButton.MouseButton1Click:Connect(function()
+    local getlink = GenerateLink(service)
+    print(getlink)
+    setclipboard(getlink)
+    keyBox.Text = getlink
 end)
 
+checkButton.MouseButton1Click:Connect(function()
+    local key = keyBox.Text
+    local authentication = validate_key(key)
+    
+    if authentication then
+        print('Successfully Authenticated')
 
+        local success, result = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps", true))()
+        end)
+
+        if not success then
+            warn('Error loading script:', result)
+        end
+    else
+        warn('Invalid Key')
+    end
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)

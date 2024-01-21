@@ -1,11 +1,11 @@
-local service = "OniHub"
+local LibVersion = "v2"
+local LibType = "roblox"
+local ServiceID = "onihub"
+
+local PandaAuth = loadstring(game:HttpGet('https://pandadevelopment.net/servicelib?service='..ServiceID..'&core='..LibType..'&param='..LibVersion))()
 
 local function GenerateLink(service)
     return loadstring(game:HttpGet(('https://pandadevelopment.net/service_api/PandaBetaLib.lua')))():GetLink(service)
-end
-  
-local function validate_key(key)
-    return loadstring(game:HttpGet(('https://pandadevelopment.net/service_api/PandaBetaLib.lua')))():ValidateKey(service, key)
 end
 
 local gui = Instance.new("ScreenGui")
@@ -22,8 +22,8 @@ keyBox.Size = UDim2.new(0, 200, 0, 30)
 keyBox.Position = UDim2.new(0.5, -100, 0.5, -75)
 keyBox.PlaceholderText = "Enter Key"
 keyBox.Parent = gui
-keyBox.BackgroundColor3 = Color3.fromRGB(108, 28, 6) 
-keyBox.TextColor3 = Color3.new(1, 1, 1) 
+keyBox.BackgroundColor3 = Color3.fromRGB(108, 28, 6)
+keyBox.TextColor3 = Color3.new(1, 1, 1)
 createUICorner(keyBox)
 
 local getKeyButton = Instance.new("TextButton")
@@ -31,10 +31,9 @@ getKeyButton.Size = UDim2.new(0, 100, 0, 30)
 getKeyButton.Position = UDim2.new(0.5, -50, 0.5, -40)
 getKeyButton.Text = "Get Key"
 getKeyButton.Parent = gui
-getKeyButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) 
-getKeyButton.TextColor3 = Color3.new(1, 1, 1) 
+getKeyButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6)
+getKeyButton.TextColor3 = Color3.new(1, 1, 1)
 createUICorner(getKeyButton)
-
 
 local checkButton = Instance.new("TextButton")
 checkButton.Size = UDim2.new(0, 100, 0, 30)
@@ -45,34 +44,38 @@ checkButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6)
 checkButton.TextColor3 = Color3.new(1, 1, 1)
 createUICorner(checkButton)
 
-
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 100, 0, 30)
 closeButton.Position = UDim2.new(0.5, -50, 0.5, 30)
 closeButton.Text = "Close"
 closeButton.Parent = gui
-closeButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6) 
-closeButton.TextColor3 = Color3.new(1, 1, 1) 
+closeButton.BackgroundColor3 = Color3.fromRGB(108, 28, 6)
+closeButton.TextColor3 = Color3.new(1, 1, 1)
 createUICorner(closeButton)
 
 getKeyButton.MouseButton1Click:Connect(function()
-    local getlink = GenerateLink(service)
+    local getlink = GenerateLink(ServiceID) 
     print(getlink)
     setclipboard(getlink)
     keyBox.Text = getlink
 end)
 
+if PandaAuth:ValidateKey(ServiceID, "KEY_GOES_HERE") then
+    print('authenticated')
+else
+    print('not authenticated')
+end
+
 checkButton.MouseButton1Click:Connect(function()
     local key = keyBox.Text
-    if validate_key(key) then
+    if PandaAuth:ValidateKey(ServiceID, key) then
         print('[Debug] Successfully Authenticated')
-        loadstring(game:HttpGet(("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps"),true))()
+        loadstring(game:HttpGet(("https://raw.githubusercontent.com/Phyoue/OniHubPSM/main/onihubps"), true))()
         print('[Debug] Executed')
     else
         warn('Invalid Key')
     end
 end)
-
 
 closeButton.MouseButton1Click:Connect(function()
     gui:Destroy()
